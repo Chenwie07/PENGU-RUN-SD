@@ -28,10 +28,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] public Text modifierText;
     [SerializeField] public Animator gameMenu;
     [SerializeField] public Animator MenuPanel;
+    [SerializeField] public Text totalCoinText;
+
     private float score;
     private int coins;
     private float modifier;
     private int lastScore;
+
+    private int totalCoin; 
 
     private void Awake()
     {
@@ -43,6 +47,7 @@ public class GameManager : MonoBehaviour
     internal void GetCoin()
     {
         gameMenu.SetTrigger("Pick_Coin");
+        PlaySFX.instance.CoinCollect(); 
         coins++;
         // check if achievement is unlocked. 
 
@@ -113,8 +118,32 @@ public class GameManager : MonoBehaviour
             }
             PlayerPrefs.SetInt("HiScore", System.Convert.ToInt32(s));
         }
+        totalCoin += coins;
+
+        // save the game
+        GoogleUtility.instance.OpenSave(true); 
     }
 
+    public string GetSaveString()
+    {
+        string r = "";
+        r += PlayerPrefs.GetInt("HiScore").ToString();
+        r += "|";
+        r += totalCoin.ToString();
+
+        return r; 
+        // e.g. 100|84. a simple save data. 
+    }
+
+    public void LoadSaveString(string save)
+    {
+        string[] data = save.Split('|');
+
+        PlayerPrefs.SetInt("HiScore", int.Parse(data[0]));
+        totalCoin = int.Parse(data[1]);
+
+        totalCoinText.text = totalCoin.ToString(); 
+    }
     public void OnAchievementClick()
     {
         if (Social.localUser.authenticated)

@@ -90,6 +90,7 @@ public class PlayerMotor : MonoBehaviour
             {
                 //jump
                 _animator.SetTrigger("Jump");
+                PlaySFX.instance.Jump(); 
                 verticalVelocity = jumpForce;
             }
             else if (MobileInput.Singleton.SwipeDown)
@@ -126,6 +127,22 @@ public class PlayerMotor : MonoBehaviour
         transform.forward = Vector3.Lerp(transform.forward, dir, TURN_SPEED);
 
         // update the score as we run. we could use events later for these things. 
+    }
+
+    IEnumerator ReviveRoutine()
+    {
+        GetComponent<CharacterController>().detectCollisions = false; 
+        transform.position = new Vector3(transform.position.x, transform.position.y * 30, transform.position.z);
+        yield return new WaitForSeconds(.5f);
+        GetComponent<CharacterController>().detectCollisions = true;
+        StartRunning();
+
+    }
+    // make the character run again. 
+    public void Revive()
+    {
+        // position the character up top to give some room. 
+        StartCoroutine(ReviveRoutine());
     }
 
     private void StopSliding()
@@ -171,6 +188,7 @@ public class PlayerMotor : MonoBehaviour
         switch (hit.gameObject.tag)
         {
             case "Obstacle":
+                hit.collider.enabled = false;
                 Crash();
                 break;
             default:
@@ -182,6 +200,7 @@ public class PlayerMotor : MonoBehaviour
     {
         GameManager.Instance.OnDeath();
         GameManager.Instance.GameStarted = false;
+        PlaySFX.instance.LoseLevelSound(); 
         _animator.SetTrigger("Death");
     }
 }
