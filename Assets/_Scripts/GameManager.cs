@@ -44,6 +44,24 @@ public class GameManager : MonoBehaviour
     {
         gameMenu.SetTrigger("Pick_Coin");
         coins++;
+        // check if achievement is unlocked. 
+
+        switch (coins)
+        {
+            case 50:
+                UnlockAchievement(GPGSPenguRunSDIds.achievement_collect_50_coins); 
+                break;
+            case 100:
+                UnlockAchievement(GPGSPenguRunSDIds.achievement_collect_100_coins); 
+                break;
+            case 150:
+                UnlockAchievement(GPGSPenguRunSDIds.achievement_collect_150_coins);
+                break;
+            case 200:
+                UnlockAchievement(GPGSPenguRunSDIds.achievement_collect_200_coins);
+                break; 
+        }
+
         coinsText.text = coins.ToString();
         score += COIN_SCORE_VALUE;
         scoreText.text = score.ToString("0");
@@ -87,6 +105,7 @@ public class GameManager : MonoBehaviour
 
         if (score > PlayerPrefs.GetInt("HiScore"))
         {
+            ReportScore((int)score); 
             float s = score;
             if (s % 1 == 0)
             {

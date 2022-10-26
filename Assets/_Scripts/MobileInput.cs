@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems; 
 
 public class MobileInput : MonoBehaviour
 {
@@ -25,8 +24,6 @@ public class MobileInput : MonoBehaviour
 
     private void Update()
     {
-        if (EventSystem.current.IsPointerOverGameObject())
-            return; 
         // at the beginning of very frame, reset all booleans. 
         Tap = SwipeLeft = SwipeRight = SwipeDown = SwipeUp = false;
 

@@ -28,6 +28,7 @@ public class GoogleUtility : MonoBehaviour
     {
         if (authenticated)
         {
+            GameManager.Instance.UnlockAchievement(GPGSPenguRunSDIds.achievement_log_in); 
             connectedUI.SetActive(true);
             disconnectedUI.SetActive(false); 
         }else

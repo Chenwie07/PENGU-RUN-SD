@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class PlayerMotor : MonoBehaviour
 {
@@ -34,25 +33,16 @@ public class PlayerMotor : MonoBehaviour
 
     private void Update()
     {
-        print(GameManager.Instance.GameStarted);
-
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            print("Pointer on UI");
-            return;
-        }
-
-
         // test if we have tapped the screen and the game had not started yet. 
         if (!GameManager.Instance.GameStarted)
             return;
 
-        if (MobileInput.Singleton.Tap && !GameManager.Instance.GameStarted)
-        {
-            print("Not Touching UI");
-            GameManager.Instance.gameMenu.SetTrigger("Show");
-            StartRunning();
-        }
+        //if (MobileInput.Singleton.Tap && !GameManager.Instance.GameStarted)
+        //{
+        //    print("Not Touching UI");
+        //    GameManager.Instance.gameMenu.SetTrigger("Show");
+        //    StartRunning();
+        //}
 
         if (Time.time - lastSpeedIncreaseTime > speedIncreaseTime)
         {
@@ -168,9 +158,10 @@ public class PlayerMotor : MonoBehaviour
         // 0.1f is that skin variable we are estimating. 
     }
 
-    internal void StartRunning()
+    public void StartRunning()
     {
         _animator.SetTrigger("Running");
+        GameManager.Instance.gameMenu.SetTrigger("Show");
         GameManager.Instance.GameStarted = true;
     }
 

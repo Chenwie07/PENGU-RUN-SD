@@ -24,7 +24,12 @@
 
 public static class GPGSPenguRunSDIds
 {
+        public const string achievement_collect_200_coins = "CgkI4KmJnbMMEAIQBg"; // <GPGSID>
+        public const string achievement_collect_100_coins = "CgkI4KmJnbMMEAIQBA"; // <GPGSID>
+        public const string achievement_log_in = "CgkI4KmJnbMMEAIQAg"; // <GPGSID>
         public const string leaderboard_pengurunsd_leaderboard = "CgkI4KmJnbMMEAIQAQ"; // <GPGSID>
+        public const string achievement_collect_50_coins = "CgkI4KmJnbMMEAIQAw"; // <GPGSID>
+        public const string achievement_collect_150_coins = "CgkI4KmJnbMMEAIQBQ"; // <GPGSID>
 
 }
 
