@@ -35,7 +35,14 @@ public class GameManager : MonoBehaviour
     private float modifier;
     private int lastScore;
 
-    private int totalCoin; 
+    private int totalCoin;
+
+    // HATS VARIABLES
+    private int unlockedHats = 1;
+    public Transform hatContainer;
+    public Transform hatButtonContainer;
+    public int[] hatPrices; 
+
 
     private void Awake()
     {
@@ -43,6 +50,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
         modifier = 1;
         highScoreText.text = PlayerPrefs.GetInt("HiScore").ToString();
+        SetHatMenu(); 
     }
     internal void GetCoin()
     {
@@ -124,23 +132,84 @@ public class GameManager : MonoBehaviour
         GoogleUtility.instance.OpenSave(true); 
     }
 
+    public void TryBuyingHat(int index)
+    {
+        // if unlocked already
+        if ((unlockedHats & 1 << index) == 1 << index)
+        {
+            foreach (Transform trans in hatContainer)
+            {
+                trans.gameObject.SetActive(false); 
+            }
+
+            if (index == 0)
+                return;
+            hatContainer.GetChild(index - 1).gameObject.SetActive(true); 
+        }
+        else
+        {
+            if (totalCoin >= hatPrices[index])
+            {
+                totalCoin -= hatPrices[index];
+
+                // unlock in array
+                // 0001 = 1 (hat at array index 0 unlocked)
+                // 1001 = (hat at array index 3 unlocked)
+                unlockedHats += 1 << index;
+
+                // Physical Change
+                foreach (Transform t in hatContainer)
+                {
+                    t.gameObject.SetActive(false); 
+                }
+                if (index == 0)
+                    return;
+
+                hatContainer.GetChild(index - 1).gameObject.SetActive(true);
+
+                hatButtonContainer.GetChild(index).GetChild(1).gameObject.SetActive(false);
+
+                GoogleUtility.instance.OpenSave(true); 
+
+            }
+        }
+    }
+
     public string GetSaveString()
     {
         string r = "";
         r += PlayerPrefs.GetInt("HiScore").ToString();
         r += "|";
-        r += totalCoin.ToString();
+        r += totalCoin.ToString() + "|";
+
+        r += unlockedHats.ToString(); 
 
         return r; 
         // e.g. 100|84. a simple save data. 
     }
 
+    private void SetHatMenu()
+    {
+        // price 
+        int i = 0;
+        foreach (Transform t in hatButtonContainer)
+        {
+            // if unlocked already
+            if ((unlockedHats & 1 << i) == 1 << i)
+                t.GetChild(1).gameObject.SetActive(false);
+            else
+                t.GetChild(1).GetComponentInChildren<Text>().text = hatPrices[i].ToString();
+
+            i++; 
+        }
+    }
     public void LoadSaveString(string save)
     {
         string[] data = save.Split('|');
 
         PlayerPrefs.SetInt("HiScore", int.Parse(data[0]));
         totalCoin = int.Parse(data[1]);
+        unlockedHats = int.Parse(data[2]); 
 
         totalCoinText.text = totalCoin.ToString(); 
     }
