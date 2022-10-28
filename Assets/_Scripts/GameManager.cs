@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
         modifier = 1;
         highScoreText.text = PlayerPrefs.GetInt("HiScore").ToString();
-        SetHatMenu(); 
+        //SetHatMenu(); 
     }
     internal void GetCoin()
     {
@@ -196,9 +196,9 @@ public class GameManager : MonoBehaviour
         {
             // if unlocked already
             if ((unlockedHats & 1 << i) == 1 << i)
-                t.GetChild(1).gameObject.SetActive(false);
+                t.GetChild(0).gameObject.SetActive(false);
             else
-                t.GetChild(1).GetComponentInChildren<Text>().text = hatPrices[i].ToString();
+                t.GetChild(0).GetComponentInChildren<Text>().text = hatPrices[i].ToString();
 
             i++; 
         }
