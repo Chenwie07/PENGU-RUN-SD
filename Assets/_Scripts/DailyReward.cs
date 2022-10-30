@@ -17,6 +17,10 @@ public class DailyReward : MonoBehaviour
     public GameObject panel;
     public TextMeshProUGUI dailyText;
 
+    private void Start()
+    {
+        PlayerPrefs.GetInt("FlagTimer", 0); 
+    }
     public void OnButtonClick()
     {
         if (timerRunning)
@@ -40,15 +44,13 @@ public class DailyReward : MonoBehaviour
     }
     private void StartTimer()
     {
-        if (!timerRunning)
+        if (!timerRunning && PlayerPrefs.GetInt("FlagTimer") == 0)
         {
+            PlayerPrefs.SetInt("FlagTimer", 1); 
             startTimer = DateTime.Now;
             TimerEnd = startTimer.AddDays(1);
-
             timerRunning = true;
-
             StartCoroutine(Timer());
-
             InitializePanel();
         }
     }
@@ -61,6 +63,7 @@ public class DailyReward : MonoBehaviour
         yield return new WaitForSeconds(Convert.ToSingle(secondsToFinish));
         
         timerRunning = false;
+        PlayerPrefs.SetInt("FlagTimer", 0); 
         // print("Reward Daily"); 
     }
 }
