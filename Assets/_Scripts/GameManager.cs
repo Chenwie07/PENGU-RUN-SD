@@ -9,7 +9,6 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     private int COIN_SCORE_VALUE = 5;
-
     public static GameManager Instance { get; set; }
     public bool GameStarted { get; internal set; }
     public bool IsDead { get; internal set; }
@@ -33,9 +32,8 @@ public class GameManager : MonoBehaviour
     private int coins;
     private float modifier;
     private int lastScore;
-
     private int totalCoin;
-   
+
     private void Awake()
     {
         IsDead = false;
@@ -173,9 +171,14 @@ public class GameManager : MonoBehaviour
                 Debug.Log("Reported score to leaderboard" + success);
             });
     }
-
     public void OnStartClick()
     {
-        FindObjectOfType<PlayerMotor>().StartRunning(); 
+        FindObjectOfType<PlayerMotor>().StartRunning();
+    }
+    internal void RewardDaily()
+    {
+        totalCoin += 10;
+        GoogleUtility.instance.OpenSave(true); 
+        GoogleUtility.instance.OpenSave(false); 
     }
 }
