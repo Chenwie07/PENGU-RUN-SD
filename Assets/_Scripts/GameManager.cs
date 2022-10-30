@@ -19,8 +19,6 @@ public class GameManager : MonoBehaviour
     public GameObject deadAnimPanel;
     public TextMeshProUGUI deadScoreText, deadCoinText;
 
-
-
     // UI fields, we could migrate to an actual UI gameobject. 
     [SerializeField] public Text scoreText;
     [SerializeField] public Text coinsText;
@@ -36,43 +34,35 @@ public class GameManager : MonoBehaviour
     private int lastScore;
 
     private int totalCoin;
-
-    // HATS VARIABLES
-    private int unlockedHats = 1;
-    public Transform hatContainer;
-    public Transform hatButtonContainer;
-    public int[] hatPrices; 
-
-
+   
     private void Awake()
     {
         IsDead = false;
         Instance = this;
         modifier = 1;
         highScoreText.text = PlayerPrefs.GetInt("HiScore").ToString();
-        //SetHatMenu(); 
     }
     internal void GetCoin()
     {
         gameMenu.SetTrigger("Pick_Coin");
-        PlaySFX.instance.CoinCollect(); 
+        PlaySFX.instance.CoinCollect();
         coins++;
         // check if achievement is unlocked. 
 
         switch (coins)
         {
             case 50:
-                UnlockAchievement(GPGSPenguRunSDIds.achievement_collect_50_coins); 
+                UnlockAchievement(GPGSPenguRunSDIds.achievement_collect_50_coins);
                 break;
             case 100:
-                UnlockAchievement(GPGSPenguRunSDIds.achievement_collect_100_coins); 
+                UnlockAchievement(GPGSPenguRunSDIds.achievement_collect_100_coins);
                 break;
             case 150:
                 UnlockAchievement(GPGSPenguRunSDIds.achievement_collect_150_coins);
                 break;
             case 200:
                 UnlockAchievement(GPGSPenguRunSDIds.achievement_collect_200_coins);
-                break; 
+                break;
         }
 
         coinsText.text = coins.ToString();
@@ -101,12 +91,10 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
     public void OnPlayButton()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
     }
-
     public void OnDeath()
     {
         IsDead = true;
@@ -118,7 +106,7 @@ public class GameManager : MonoBehaviour
 
         if (score > PlayerPrefs.GetInt("HiScore"))
         {
-            ReportScore((int)score); 
+            ReportScore((int)score);
             float s = score;
             if (s % 1 == 0)
             {
@@ -129,52 +117,8 @@ public class GameManager : MonoBehaviour
         totalCoin += coins;
 
         // save the game
-        GoogleUtility.instance.OpenSave(true); 
+        GoogleUtility.instance.OpenSave(true);
     }
-
-    public void TryBuyingHat(int index)
-    {
-        // if unlocked already
-        if ((unlockedHats & 1 << index) == 1 << index)
-        {
-            foreach (Transform trans in hatContainer)
-            {
-                trans.gameObject.SetActive(false); 
-            }
-
-            if (index == 0)
-                return;
-            hatContainer.GetChild(index - 1).gameObject.SetActive(true); 
-        }
-        else
-        {
-            if (totalCoin >= hatPrices[index])
-            {
-                totalCoin -= hatPrices[index];
-
-                // unlock in array
-                // 0001 = 1 (hat at array index 0 unlocked)
-                // 1001 = (hat at array index 3 unlocked)
-                unlockedHats += 1 << index;
-
-                // Physical Change
-                foreach (Transform t in hatContainer)
-                {
-                    t.gameObject.SetActive(false); 
-                }
-                if (index == 0)
-                    return;
-
-                hatContainer.GetChild(index - 1).gameObject.SetActive(true);
-
-                hatButtonContainer.GetChild(index).GetChild(1).gameObject.SetActive(false);
-
-                GoogleUtility.instance.OpenSave(true); 
-
-            }
-        }
-    }
-
     public string GetSaveString()
     {
         string r = "";
@@ -182,26 +126,8 @@ public class GameManager : MonoBehaviour
         r += "|";
         r += totalCoin.ToString() + "|";
 
-        r += unlockedHats.ToString(); 
-
-        return r; 
+        return r;
         // e.g. 100|84. a simple save data. 
-    }
-
-    private void SetHatMenu()
-    {
-        // price 
-        int i = 0;
-        foreach (Transform t in hatButtonContainer)
-        {
-            // if unlocked already
-            if ((unlockedHats & 1 << i) == 1 << i)
-                t.GetChild(0).gameObject.SetActive(false);
-            else
-                t.GetChild(0).GetComponentInChildren<Text>().text = hatPrices[i].ToString();
-
-            i++; 
-        }
     }
     public void LoadSaveString(string save)
     {
@@ -209,9 +135,8 @@ public class GameManager : MonoBehaviour
 
         PlayerPrefs.SetInt("HiScore", int.Parse(data[0]));
         totalCoin = int.Parse(data[1]);
-        unlockedHats = int.Parse(data[2]); 
 
-        totalCoinText.text = totalCoin.ToString(); 
+        totalCoinText.text = totalCoin.ToString();
     }
     public void OnAchievementClick()
     {
@@ -227,7 +152,6 @@ public class GameManager : MonoBehaviour
             Social.ShowLeaderboardUI();
         }
     }
-
     public void UnlockAchievement(string achievementID)
     {
         // if it is an incremental achievement, we increment the value here gradually, 
@@ -238,7 +162,6 @@ public class GameManager : MonoBehaviour
             Debug.Log("Achievement Unlocked");
         });
     }
-
     public void ReportScore(int score)
     {
         // if the score is low, the leaderboard won't update it. 
@@ -248,5 +171,10 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("Reported score to leaderboard" + success);
             });
+    }
+
+    public void OnStartClick()
+    {
+        FindObjectOfType<PlayerMotor>().StartRunning(); 
     }
 }

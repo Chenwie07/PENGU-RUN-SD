@@ -37,13 +37,6 @@ public class PlayerMotor : MonoBehaviour
         if (!GameManager.Instance.GameStarted)
             return;
 
-        //if (MobileInput.Singleton.Tap && !GameManager.Instance.GameStarted)
-        //{
-        //    print("Not Touching UI");
-        //    GameManager.Instance.gameMenu.SetTrigger("Show");
-        //    StartRunning();
-        //}
-
         if (Time.time - lastSpeedIncreaseTime > speedIncreaseTime)
         {
             // if the difference in our current time and the last time the speed increase is greater than the time we are to increase speed, 
@@ -97,10 +90,10 @@ public class PlayerMotor : MonoBehaviour
             {
                 // slide
                 _animator.SetTrigger("Slide");
-                _characterController.center = new Vector3(_characterController.center.x,
-                    _characterController.center.y / 2,
-                    _characterController.center.z); // modify the collider for slide. 
-                _characterController.height /= 2;
+                //_characterController.center = new Vector3(_characterController.center.x,
+                //    _characterController.center.y / 2,
+                //    _characterController.center.z); // modify the collider for slide. 
+                //_characterController.height /= 2;
                 Invoke(nameof(StopSliding), 0.5f);
             }
         }
@@ -177,6 +170,9 @@ public class PlayerMotor : MonoBehaviour
 
     public void StartRunning()
     {
+        FindObjectOfType<CameraMotor>().resetLookAt();
+        FindObjectOfType<FollowPlayer>().resetPlayerPosition();
+        FindObjectOfType<GlacierSpawner>().ResetPlayerTransform(); 
         _animator.SetTrigger("Running");
         GameManager.Instance.gameMenu.SetTrigger("Show");
         GameManager.Instance.GameStarted = true;

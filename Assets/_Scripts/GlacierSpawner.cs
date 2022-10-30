@@ -19,6 +19,11 @@ public class GlacierSpawner : MonoBehaviour
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform; 
     }
 
+    public void ResetPlayerTransform()
+    {
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform; 
+    }
+
     private void Update()
     {
         if (!IsScrolling)
