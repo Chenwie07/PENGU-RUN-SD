@@ -19,12 +19,12 @@ public class DailyReward : MonoBehaviour
 
     private void Start()
     {
-        PlayerPrefs.GetInt("FlagTimer", 0); 
+        PlayerPrefs.GetInt("FlagTimer", 0);
     }
     public void OnButtonClick()
     {
         if (timerRunning)
-            return; 
+            return;
         StartTimer();
     }
 
@@ -32,21 +32,20 @@ public class DailyReward : MonoBehaviour
     {
         dailyText.text = "Time until next reward: \n" +
             (TimerEnd - DateTime.Now).Hours + " :" +
-            (TimerEnd - DateTime.Now).Minutes + " :"+
+            (TimerEnd - DateTime.Now).Minutes + " :" +
             (TimerEnd - DateTime.Now).Seconds;
     }
 
     private void FixedUpdate()
     {
-        if (!timerRunning)
-            return; 
-        InitializePanel(); 
+        if (PlayerPrefs.GetInt("FlagTimer") == 1)
+            InitializePanel();
     }
     private void StartTimer()
     {
         if (!timerRunning && PlayerPrefs.GetInt("FlagTimer") == 0)
         {
-            PlayerPrefs.SetInt("FlagTimer", 1); 
+            PlayerPrefs.SetInt("FlagTimer", 1);
             startTimer = DateTime.Now;
             TimerEnd = startTimer.AddDays(1);
             timerRunning = true;
@@ -61,9 +60,9 @@ public class DailyReward : MonoBehaviour
         double secondsToFinish = (TimerEnd - start).TotalMilliseconds;
 
         yield return new WaitForSeconds(Convert.ToSingle(secondsToFinish));
-        
+
         timerRunning = false;
-        PlayerPrefs.SetInt("FlagTimer", 0); 
+        PlayerPrefs.SetInt("FlagTimer", 0);
         // print("Reward Daily"); 
     }
 }
