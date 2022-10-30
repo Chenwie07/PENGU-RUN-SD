@@ -9,6 +9,7 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     private int COIN_SCORE_VALUE = 5;
+
     public static GameManager Instance { get; set; }
     public bool GameStarted { get; internal set; }
     public bool IsDead { get; internal set; }

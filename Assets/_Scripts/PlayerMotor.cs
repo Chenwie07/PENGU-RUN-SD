@@ -83,17 +83,18 @@ public class PlayerMotor : MonoBehaviour
             {
                 //jump
                 _animator.SetTrigger("Jump");
-                PlaySFX.instance.Jump(); 
+                PlaySFX.instance.Jump();
                 verticalVelocity = jumpForce;
             }
             else if (MobileInput.Singleton.SwipeDown)
             {
                 // slide
                 _animator.SetTrigger("Slide");
-                //_characterController.center = new Vector3(_characterController.center.x,
-                //    _characterController.center.y / 2,
-                //    _characterController.center.z); // modify the collider for slide. 
-                //_characterController.height /= 2;
+                // np need to mess with a working formular for the penguin
+                _characterController.center = new Vector3(_characterController.center.x,
+                    _characterController.center.y / 2,
+                    _characterController.center.z); // modify the collider for slide. 
+                _characterController.height /= 2;
                 Invoke(nameof(StopSliding), 0.5f);
             }
         }
@@ -124,8 +125,9 @@ public class PlayerMotor : MonoBehaviour
 
     IEnumerator ReviveRoutine()
     {
-        GetComponent<CharacterController>().detectCollisions = false; 
+        GetComponent<CharacterController>().detectCollisions = false;
         transform.position = new Vector3(transform.position.x, transform.position.y * 30, transform.position.z);
+        _animator.SetTrigger("Respawn"); 
         yield return new WaitForSeconds(.5f);
         GetComponent<CharacterController>().detectCollisions = true;
         StartRunning();
@@ -172,7 +174,7 @@ public class PlayerMotor : MonoBehaviour
     {
         FindObjectOfType<CameraMotor>().resetLookAt();
         FindObjectOfType<FollowPlayer>().resetPlayerPosition();
-        FindObjectOfType<GlacierSpawner>().ResetPlayerTransform(); 
+        FindObjectOfType<GlacierSpawner>().ResetPlayerTransform();
         _animator.SetTrigger("Running");
         GameManager.Instance.gameMenu.SetTrigger("Show");
         GameManager.Instance.GameStarted = true;
@@ -196,7 +198,7 @@ public class PlayerMotor : MonoBehaviour
     {
         GameManager.Instance.OnDeath();
         GameManager.Instance.GameStarted = false;
-        PlaySFX.instance.LoseLevelSound(); 
+        PlaySFX.instance.LoseLevelSound();
         _animator.SetTrigger("Death");
     }
 }
